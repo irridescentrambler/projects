@@ -8,10 +8,12 @@ class Ability
     if user.admin?
       can :manage, User
       can :visit, :admin_dashboard
+      can :manage, Project
     else
       can :read, User
       can :update, User
       can :visit, :developer_dashboard
+      can :read, Project
     end
     #
     # The first argument to `can` is the action you are giving the user 

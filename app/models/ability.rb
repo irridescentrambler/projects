@@ -7,9 +7,11 @@ class Ability
     user ||= User.new # guest user (not logged in)
     if user.admin?
       can :manage, User
+      can :visit, :admin_dashboard
     else
       can :read, User
       can :update, User
+      can :visit, :developer_dashboard
     end
     #
     # The first argument to `can` is the action you are giving the user 

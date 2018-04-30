@@ -1,1 +1,30 @@
-<h1>Developer dashboard</h1>
+<div class="container">
+  <div class="row">
+    <div class = "col-sm-12 col-lg-6">
+      <div class="table-responsive" style="margin-top: 20px;">
+        <table id="example" class="display" style="width:100%;">
+          <thead>
+            <tr>
+              <th>Task name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% current_user.tasks.try(:each) do |task| %>
+              <tr>
+                <td><%= task.try(:name) %></td>
+                <td><%= task.try(:status) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        <table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('#example').DataTable();
+  });
+</script>

@@ -1,0 +1,33 @@
+<div class="container" style="margin-top: 20px;">
+  <% if can? :create, Project %>
+    <div class="row" style="margin-bottom: 20px;">
+      <div class = "col-sm-12 col-md-12 col-lg-3">
+        <%= link_to "Create a new project", new_project_path, class: "btn btn-success" %>
+      </div>
+    </div>
+  <% end %>
+  <div class = "row">
+    <% unless @projects.blank? %>
+      <% @projects.each do |project| %>
+        <div class = "col-sm-12 col-md-12 col-lg-3" style="margin-top: 10px; margin-bottom: 10px;">
+          <div class="card">
+            <img class="card-img-top" src="<%= asset_url "projects_thumbnail.jpg" %>" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= project.try(:name) %>  
+              </h5>
+              <p class="card-text">
+                <%= project_description_decorator(project.try(:description)) %>  
+              </p>
+              <%= link_to "Click here", project_path(project), class: "btn btn-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class = "col-sm-12 col-md-12 col-lg-6">
+        <h3>You dont have any active projects</h3>
+      </div>
+    <% end %>
+  </div>
+</div>

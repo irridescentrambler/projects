@@ -16,3 +16,4 @@
 //= require js/jquery.js
 //= require js/popper.js
 //= require js/bootstrap.js
+//= require js/datatables.js

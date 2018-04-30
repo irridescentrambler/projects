@@ -17,4 +17,7 @@ Rails.application.routes.draw do
       get :main
     end
   end
+
+  resources :projects
+  resources :tasks
 end

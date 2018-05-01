@@ -12,6 +12,7 @@
     
     <div class="col-lg-6 col-sm-12"> 
       <div class="list-group">
+        Project details :- 
         <ul class="list-group">
           <li class="list-group-item">
             Name :- <%= @project.try(:name) %>
@@ -23,7 +24,8 @@
       </div>
     </div> 
     
-    <div class="col-lg-6 col-sm-12"> 
+    <div class="col-lg-6 col-sm-12">
+      Developers :- 
       <div class="list-group" style="max-height: 200px;overflow-y: scroll;">
         <% @project.try(:developers).try(:each) do |developer| %>
           <li class="list-group-item">
@@ -34,15 +36,33 @@
     </div>
 
     <div class="col-lg-12 col-sm-12" style="margin-top: 10px;">
-      <div class="list-group" style="max-height: 200px;overflow-y: scroll;">
-        <% @project.tasks.try(:each) do |task| %>
-          <% if task.persisted? %>
-            <li class="list-group-item">
-              <%= task.try(:name) %>
-            </li>
+      <table id="example" class="display" style="width:100%">
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Status</th>
+            <th>Assigned to</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @project.tasks.try(:each) do |task| %>
+            <% if task.persisted? %>
+              <tr>
+                <td><%= task.try(:name) %></td>
+                <td><%= task.try(:status) %></td>
+                <td><%= task.try(:developer).try(:email) %></td>
+              </tr>
+            <% end %>
           <% end %>
-        <% end %>
-      </div>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Task Name</th>
+            <th>Status</th>
+            <th>Assigned to</th>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   </div>
 
@@ -86,3 +106,30 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(function() {
+    $('#example').DataTable( {
+        initComplete: function () {
+            this.api().columns().every( function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo( $(column.footer()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+ 
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
+        }
+    } );
+  } );
+</script>

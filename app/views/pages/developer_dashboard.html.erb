@@ -1,19 +1,33 @@
 <div class="container">
   <div class="row">
-    <div class = "col-sm-12 col-lg-6">
+    <div class = "col-sm-12 col-lg-12">
       <div class="table-responsive" style="margin-top: 20px;">
         <table id="example" class="display" style="width:100%;">
           <thead>
             <tr>
-              <th>Task name</th>
-              <th>Status</th>
+              <th>
+                Task name
+              </th>
+              <th>
+                Status
+              </th>
+              <th>
+                Project
+              </th>
             </tr>
           </thead>
           <tbody>
             <% current_user.tasks.try(:each) do |task| %>
               <tr>
-                <td><%= task.try(:name) %></td>
-                <td><%= task.try(:status) %></td>
+                <td>
+                  <a href = "<%= task_path(task) %>"><%= task.try(:name) %></a>
+                </td>
+                <td>
+                  <%= task.try(:status) %>
+                </td>
+                <td>
+                  <%= task.try(:project).try(:name) %>
+                </td>
               </tr>
             <% end %>
           </tbody>

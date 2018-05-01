@@ -27,9 +27,9 @@ class TasksController < ApplicationController
 
   def update
     if @task.update(task_params)
-
+      redirect_to request.referer, alert: "Successfully updated the task"
     else
-    
+      redirect_to request.referer, errors: @task.errors.full_messages
     end
   end
 
@@ -43,6 +43,6 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:name, :description, :developer_id, :project_id)
+      params.require(:task).permit(:name, :status, :description, :developer_id, :project_id).merge(creator_id: current_user.try(:id))
     end
 end

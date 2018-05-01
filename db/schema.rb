@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426124351) do
+ActiveRecord::Schema.define(version: 20180501170706) do
 
   create_table "developers_projects", force: :cascade do |t|
     t.integer "developer_id"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20180426124351) do
     t.string "name"
     t.text "description"
     t.integer "status", default: 0
+    t.integer "creator_id"
   end
 
   create_table "users", force: :cascade do |t|

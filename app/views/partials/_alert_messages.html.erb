@@ -1,0 +1,16 @@
+<div class = "container" style="margin-top: 10px;">
+  <% if alert.present? %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <% if alert.class == String %>
+        <%= alert %>
+      <% elsif alert.class == Array %>
+        <% alert.each do |f| %>
+          <%= f %>
+        <% end %>
+      <% end %>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% end %>
+</div>

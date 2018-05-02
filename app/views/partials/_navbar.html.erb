@@ -3,9 +3,14 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+      <% if user_signed_in? %>
+        <li class="nav-item active">
+          <img src="<%= asset_url("default_user.png") %>" alt="John Doe" class="mr-3 mt-3 rounded-circle" style="width:50px;">
+          <strong style="color: white"><%= current_user.try(:email) %></strong>
+        </li>
+      <% end %>
       <% unless user_signed_in? %>
         <li class="nav-item active">
           <%= link_to "Signin", new_user_session_path, class: "nav-link" %>

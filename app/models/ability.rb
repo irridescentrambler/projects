@@ -16,6 +16,7 @@ class Ability
       can :visit, :developer_dashboard
       can :read, Project
       can :update, Task, :developer_id => user.id
+      can :show, Task, :developer_id => user.id
     end
     #
     # The first argument to `can` is the action you are giving the user 

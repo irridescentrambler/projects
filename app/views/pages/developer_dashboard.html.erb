@@ -8,10 +8,10 @@
               <th>
                 Task name
               </th>
-              <th>
+              <th class = "select">
                 Status
               </th>
-              <th>
+              <th class = "select">
                 Project
               </th>
             </tr>
@@ -20,7 +20,10 @@
             <% current_user.tasks.try(:each) do |task| %>
               <tr>
                 <td>
-                  <a href = "<%= task_path(task) %>"><%= task.try(:name) %></a>
+                  <%= task.try(:name) %>
+                  <a href = "<%= task_path(task) %>">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </a>
                 </td>
                 <td>
                   <%= task.try(:status) %>
@@ -39,6 +42,45 @@
 
 <script>
   $(document).ready(function(){
-    $('#example').DataTable();
+    $('#example').DataTable({
+      initComplete: function () {
+        this.api().columns().every(function () {
+            var column = this;
+            if ($(column.header()).hasClass('select')) {
+                console.log(column);
+                var select = $('<select class = "form-control"><option value="">' + $(column.header()).html() + '</option></select>')
+                        .appendTo($(column.header()).empty())
+                        .on('change', function (e) {
+                            e.stopImmediatePropagation();
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                    );
+                            column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            return false;
+                        });
+                column.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+            } else if ($(column.header()).hasClass('text')) {
+                var text = $('<input type="text" placeholder="' + $(column.header()).html() + '" />')
+                        .appendTo($(column.header()).empty())
+                        .on('keyup change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                                );
+                            if (column.search() !== this.value) {
+                                column
+                                        .search(val)
+                                        .draw();
+                            }
+                            return false;
+                        });
+
+            }
+        });
+      }
+    });
   });
 </script>

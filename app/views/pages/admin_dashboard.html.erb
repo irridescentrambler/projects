@@ -10,35 +10,41 @@
         </div>
       </div>
     </div>
-    <div class = "col-sm-12 col-md-12 col-lg-9">
+  </div>
+  <hr/>
+  <div class = "row">
+    <div class = "col-sm-12 col-md-12 col-lg-12">
       <h4>Tasks :-</h4>
       <table id="example" class="display" style="width:100%">
         <thead>
           <tr>
             <th>Task Name</th>
-            <th>Status</th>
-            <th>Assigned to</th>
-            <th>Project</th>
+            <th class = "select">Status</th>
+            <th class = "select">Assigned to</th>
+            <th class = "select">Project</th>
           </tr>
         </thead>
         <tbody>
           <% current_user.try(:created_tasks).try(:each) do |task| %>
             <tr>
-              <td><%= task.try(:name) %></td>
-              <td><%= task.try(:status) %></td>
-              <td><%= task.try(:developer).try(:email) %></td>
-              <td><%= task.try(:project).try(:name) %></td>
+              <td>
+                <%= task.try(:name) %>
+                <a href = "<%= task_path(task) %>">
+                  <i class="fa fa-eye" aria-hidden="true"></i>
+                </a>
+              </td>
+              <td>
+                <%= task.try(:status) %>    
+              </td>
+              <td>
+                <%= task.try(:developer).try(:email) %>    
+              </td>
+              <td>
+                <%= task.try(:project).try(:name) %>    
+              </td>
             </tr>
           <% end %>
         </tbody>
-        <tfoot>
-          <tr>
-            <th>Task Name</th>
-            <th>Status</th>
-            <th>Assigned to</th>
-            <th>Project</th>
-          </tr>
-        </tfoot>
       </table>
     </div>
   </div>
@@ -48,26 +54,46 @@
 
   $(document).ready(function() {
     $('#example').DataTable( {
+        "ordering": false,
+        "scrollX": true,
         initComplete: function () {
-            this.api().columns().every( function () {
-                var column = this;
-                var select = $('<select><option value=""></option></select>')
-                    .appendTo( $(column.footer()).empty() )
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
- 
-                column.data().unique().sort().each( function ( d, j ) {
-                    select.append( '<option value="'+d+'">'+d+'</option>' )
-                } );
-            } );
-        }
+        this.api().columns().every(function () {
+            var column = this;
+            if ($(column.header()).hasClass('select')) {
+                console.log(column);
+                var select = $('<select class = "form-control"><option value="">' + $(column.header()).html() + '</option></select>')
+                        .appendTo($(column.header()).empty())
+                        .on('change', function (e) {
+                            e.stopImmediatePropagation();
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                    );
+                            column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            return false;
+                        });
+                column.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+            } else if ($(column.header()).hasClass('text')) {
+                var text = $('<input type="text" placeholder="' + $(column.header()).html() + '" />')
+                        .appendTo($(column.header()).empty())
+                        .on('keyup change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                                );
+                            if (column.search() !== this.value) {
+                                column
+                                        .search(val)
+                                        .draw();
+                            }
+                            return false;
+                        });
+
+            }
+        });
+      }
     } );
   } );
 </script>

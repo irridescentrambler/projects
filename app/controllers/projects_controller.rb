@@ -25,16 +25,16 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    authorize! :read, current_user
+    authorize! :read, @project
     @task = @project.tasks.build
   end
 
   def edit
-    authorize! :update, current_user
+    authorize! :update, @project
   end
 
   def update
-    authorize! :update, current_user
+    authorize! :update, @project
     if @project.update(project_params)
       redirect_to project_path(@project), alert: "Successfully updated"
     else
@@ -43,7 +43,7 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    authorize! :delete, current_user
+    authorize! :delete, @project
     @project.destroy
     redirect_to projects_path, alert: "Successfully deleted"
   end

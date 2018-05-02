@@ -1,11 +1,17 @@
 <div class="container" style="margin-top: 20px;">
   <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
     <div class="col-sm-12">
-      <%= link_to "Edit Project", edit_project_path(@project), class: "btn btn-success" %>
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Add task
-      </button>
-      <%= link_to "Delete Project", project_path(@project), class: "btn btn-danger", :"data-method" => "DELETE", style: "float: right;" %>
+      <% if can? :edit, @project %>
+        <%= link_to "Edit Project", edit_project_path(@project), class: "btn btn-success" %>
+      <% end %>
+      <% if can? :create, @task %>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+          Add task
+        </button>
+      <% end %>
+      <% if can? :delete, @project %>
+        <%= link_to "Delete Project", project_path(@project), class: "btn btn-danger", :"data-method" => "DELETE", style: "float: right;" %>
+      <% end %>
     </div>
   </div>
   <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
@@ -19,6 +25,9 @@
           </li>
           <li class="list-group-item" style="overflow-wrap: break-word;">
             <p>Description :- <%= @project.try(:description) %></p> 
+          </li>
+          <li class="list-group-item" style="overflow-wrap: break-word;">
+            <p>Admin :- <%= @project.try(:manager).try(:email) %></p> 
           </li>
         </ul>
       </div>
@@ -34,14 +43,17 @@
         <% end %>
       </div>
     </div>
+  </div>
+  <hr/>
+  <div class = "row">
 
     <div class="col-lg-12 col-sm-12" style="margin-top: 10px;">
       <table id="example" class="display" style="width:100%">
         <thead>
           <tr>
             <th>Task Name</th>
-            <th>Status</th>
-            <th>Assigned to</th>
+            <th class = "select">Status</th>
+            <th class = "select">Assigned to</th>
           </tr>
         </thead>
         <tbody>
@@ -55,13 +67,6 @@
             <% end %>
           <% end %>
         </tbody>
-        <tfoot>
-          <tr>
-            <th>Task Name</th>
-            <th>Status</th>
-            <th>Assigned to</th>
-          </tr>
-        </tfoot>
       </table>
     </div>
   </div>
@@ -111,25 +116,43 @@
   $(document).ready(function() {
     $('#example').DataTable( {
         initComplete: function () {
-            this.api().columns().every( function () {
-                var column = this;
-                var select = $('<select><option value=""></option></select>')
-                    .appendTo( $(column.footer()).empty() )
-                    .on( 'change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
- 
-                        column
-                            .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
-                    } );
- 
-                column.data().unique().sort().each( function ( d, j ) {
-                    select.append( '<option value="'+d+'">'+d+'</option>' )
-                } );
-            } );
-        }
+        this.api().columns().every(function () {
+            var column = this;
+            if ($(column.header()).hasClass('select')) {
+                console.log(column);
+                var select = $('<select class = "form-control"><option value="">' + $(column.header()).html() + '</option></select>')
+                        .appendTo($(column.header()).empty())
+                        .on('change', function (e) {
+                            e.stopImmediatePropagation();
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                    );
+                            column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            return false;
+                        });
+                column.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+            } else if ($(column.header()).hasClass('text')) {
+                var text = $('<input type="text" placeholder="' + $(column.header()).html() + '" />')
+                        .appendTo($(column.header()).empty())
+                        .on('keyup change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                                );
+                            if (column.search() !== this.value) {
+                                column
+                                        .search(val)
+                                        .draw();
+                            }
+                            return false;
+                        });
+
+            }
+        });
+      }
     } );
   } );
 </script>

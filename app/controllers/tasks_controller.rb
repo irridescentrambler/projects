@@ -17,9 +17,9 @@ class TasksController < ApplicationController
   def create
     @task = Task.new(task_params.merge(creator_id: current_user.try(:id)))
     if @task.save
-      redirect_to request.referrer, alert: "Successfully created the task"
+      redirect_to request.referrer || task_path(@task), alert: "Successfully created the task"
     else
-      redirect_to request.referrer, alert: @task.errors.full_messages
+      redirect_to request.referrer || new_task_path, alert: @task.errors.full_messages
     end
   end
 
@@ -29,14 +29,15 @@ class TasksController < ApplicationController
   def update
     authorize! :update, @task
     if @task.update(task_params)
-      redirect_to request.referer, alert: "Successfully updated the task"
+      redirect_to request.referer || task_path(@task), alert: "Successfully updated the task"
     else
-      redirect_to request.referer, alert: @task.errors.full_messages
+      redirect_to request.referer || edit_task_path(@task), alert: @task.errors.full_messages
     end
   end
 
   def destroy
     @task.destroy
+    redirect_to request.referer || edit_task_path(@task), alert: "Successfully deleted"
   end
 
   private 

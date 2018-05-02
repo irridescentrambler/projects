@@ -60,7 +60,6 @@
         this.api().columns().every(function () {
             var column = this;
             if ($(column.header()).hasClass('select')) {
-                console.log(column);
                 var select = $('<select class = "form-control"><option value="">' + $(column.header()).html() + '</option></select>')
                         .appendTo($(column.header()).empty())
                         .on('change', function (e) {

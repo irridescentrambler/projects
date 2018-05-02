@@ -104,8 +104,6 @@
           <% end %>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
@@ -115,11 +113,11 @@
 <script>
   $(document).ready(function() {
     $('#example').DataTable( {
+        "ordering": false,
         initComplete: function () {
         this.api().columns().every(function () {
             var column = this;
             if ($(column.header()).hasClass('select')) {
-                console.log(column);
                 var select = $('<select class = "form-control"><option value="">' + $(column.header()).html() + '</option></select>')
                         .appendTo($(column.header()).empty())
                         .on('change', function (e) {

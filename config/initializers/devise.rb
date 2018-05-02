@@ -153,7 +153,7 @@ Devise.setup do |config|
 
   # Invalidates all the remember me tokens when the user signs out.
   config.expire_all_remember_me_on_sign_out = true
-
+  config.secret_key = 'a02a379b1458466def0681ee142b7e210efa853d08ffbd81683d8ccd49f88aca1e54e657cc8929b40c028aaddcd3dec85df82cee3528e3e58dc737a492e93538'
   # If true, extends the user's remember period when remembered via cookie.
   # config.extend_remember_period = false
 

@@ -43,6 +43,7 @@
 <script>
   $(document).ready(function(){
     $('#example').DataTable({
+      "ordering": false,
       initComplete: function () {
         this.api().columns().every(function () {
             var column = this;

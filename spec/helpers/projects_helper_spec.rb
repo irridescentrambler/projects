@@ -11,5 +11,7 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe ProjectsHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "Tests project_description_decorator" do
+    expect(helper.project_description_decorator("abcdefghijklmnopqrstuvwxyz12345")).to eq("abcdefghijklmnopqrstuv...") 
+  end
 end
